@@ -38,3 +38,73 @@ TODO-List:
 - Improve error handling if one of the images is not present etc.
 - Tool to write GETINTS.BIN and read INTS.BIN using DOS.
 
+  ---
+
+Instructions from @toncho11 from https://github.com/ghaerr/elks/issues/2236
+
+  BOOTELKS - Boot ELKS from DOS
+
+This setup allows you to load the ELKS kernel from a DOS environment using BOOTELKS.COM.
+REQUIRED FILES
+
+    BOOTELKS.COM
+        The DOS program that loads and starts the ELKS kernel.
+
+    IMAGE
+        The ELKS kernel image file. The ELKS' kernel is called "kernel" and must be renamed to "image".
+        Must be the raw kernel binary, not a floppy or disk image.
+        Can be compiled from ELKS source or obtained prebuilt.
+
+    INTS.BIN
+        A binary dump of the system's Interrupt Vector Table (IVT) and BIOS data.
+        Must be exactly 0x500 (1280) bytes, copied from RAM starting at segment 0x0000.
+        Created using the GETINTS utility described below.
+
+    GETINTS.COM
+
+        A small DOS program to dump the first 0x500 bytes of memory.
+
+        Run it under a clean DOS environment to generate INTS.BIN.
+
+        Example usage:
+
+            GETINTS > INTS.BIN
+
+SETUP INSTRUCTIONS
+
+    Boot into a clean DOS environment (MS-DOS or FreeDOS). Avoid loading memory managers or TSRs.
+
+    Place the following files in the same directory:
+        BOOTELKS.COM
+        IMAGE
+        INTS.BIN
+
+    Example directory layout:
+
+    A:\ELKS
+    ├── BOOTELKS.COM
+    ├── IMAGE
+    └── INTS.BIN
+
+    Run BOOTELKS:
+
+        BOOTELKS
+
+    This will:
+        Load the IMAGE (ELKS kernel) into memory.
+        Restore BIOS state from INTS.BIN.
+        Transfer execution to ELKS.
+
+NOTES
+
+    You must create INTS.BIN only once per machine (or BIOS environment).
+    BOOTELKS is not compatible with compressed kernel images.
+
+TROUBLESHOOTING
+
+    If BOOTELKS hangs or resets, ensure:
+        The IMAGE is a raw, valid ELKS kernel.
+        INTS.BIN is correct and generated in a clean DOS state.
+        No drivers or memory managers (like HIMEM.SYS or EMM386) are loaded.
+
+
